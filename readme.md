@@ -61,19 +61,22 @@ Each of these directories and files serves a specific role in the organization a
 ## Algorithm Details
 The core algorithm responsible for matching homebuyers to neighborhoods is built around four key stages, which are encapsulated in the `execute` method of the `PlaceHomeBuyersInNeighborhoods` class:
 
-![flow-chart](https://github.com/user-attachments/assets/f7d3409c-be36-4efe-804a-141d4157706a)
+https://github.com/pedrohnq/neighborhood_match/blob/d9819f00116491e99d820916a1c7dd3c971c30da/algorithm/place_homebuyers_in_neighborhood.py#L143-L151
 
+The flowchart below visually represents the execution of the algorithm.
 
-1. **Read Input File**  
+![flow-chart](https://github.com/user-attachments/assets/5b7d37d4-23b7-45a4-a486-cc8ccda73b53)
+
+1. **Read File**  
    In this step, the algorithm reads and parses the input data file to extract relevant information about neighborhoods and homebuyers. It ensures that the algorithm has access to all necessary data before starting the allocation process.
 
 2. **Initialize Algorithm**  
    After reading the data, the algorithm is initialized by setting up the necessary data structures. This includes defining the limit for how many homebuyers each neighborhood can accommodate and organizing the homebuyers' priority lists for each neighborhood.
 
 3. **Assign Homebuyers**  
-   This is the core step where homebuyers are assigned to neighborhoods. The algorithm iterates through each neighborhood and checks whether the number of allocated homebuyers is below the neighborhood's capacity. It then evaluates each homebuyer's preferences and scores, starting with their top priority neighborhood. Homebuyers are assigned to their preferred neighborhood if there is available space and they haven't already been allocated. If the neighborhood reaches its capacity, lower-priority homebuyers are re-evaluated and reassigned to other neighborhoods in subsequent iterations, based on their next preferences. This iterative process ensures that homebuyers are placed in the best available neighborhood while considering both preferences and capacity limits.
+   This stage contains the main logic of the algorithm. Homebuyers are assigned to neighborhoods based on their preferences and scores. The allocation is done iteratively, ensuring that constraints such as neighborhood capacity and buyer preferences are respected.
 
-4. **Write Output File**  
+4. **Write File**  
    Finally, after the homebuyers have been allocated to the neighborhoods, the results are written to an output file. This file displays the final allocation, detailing which homebuyers were assigned to which neighborhoods based on preferences and scores.
 
 These stages ensure that the algorithm processes the input data correctly, allocates homebuyers according to the desired rules, and outputs the results efficiently.
