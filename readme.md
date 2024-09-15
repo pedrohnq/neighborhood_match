@@ -59,4 +59,21 @@ Each of these directories and files serves a specific role in the organization a
 
 
 ## Algorithm Details
+The core algorithm responsible for matching homebuyers to neighborhoods is built around four key stages, which are encapsulated in the `execute` method of the `PlaceHomeBuyersInNeighborhoods` class:
+
 ![flow-chart](https://github.com/user-attachments/assets/5b7d37d4-23b7-45a4-a486-cc8ccda73b53)
+
+
+1. **Read File**  
+   In this step, the algorithm reads and parses the input data file to extract relevant information about neighborhoods and homebuyers. It ensures that the algorithm has access to all necessary data before starting the allocation process.
+
+2. **Initialize Algorithm**  
+   After reading the data, the algorithm is initialized by setting up the necessary data structures. This includes defining the limit for how many homebuyers each neighborhood can accommodate and organizing the homebuyers' priority lists for each neighborhood.
+
+3. **Assign Homebuyers**  
+   This stage contains the main logic of the algorithm. Homebuyers are assigned to neighborhoods based on their preferences and scores. The allocation is done iteratively, ensuring that constraints such as neighborhood capacity and buyer preferences are respected.
+
+4. **Write File**  
+   Finally, after the homebuyers have been allocated to the neighborhoods, the results are written to an output file. This file displays the final allocation, detailing which homebuyers were assigned to which neighborhoods based on preferences and scores.
+
+These stages ensure that the algorithm processes the input data correctly, allocates homebuyers according to the desired rules, and outputs the results efficiently.
