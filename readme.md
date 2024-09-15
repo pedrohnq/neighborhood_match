@@ -74,7 +74,7 @@ The flowchart below visually represents the execution of the algorithm.
    After reading the data, the algorithm is initialized by setting up the necessary data structures. This includes defining the limit for how many homebuyers each neighborhood can accommodate and organizing the homebuyers' priority lists for each neighborhood.
 
 3. **Assign Homebuyers**  
-   This stage contains the main logic of the algorithm. Homebuyers are assigned to neighborhoods based on their preferences and scores. The allocation is done iteratively, ensuring that constraints such as neighborhood capacity and buyer preferences are respected.
+   This is the core step where homebuyers are assigned to neighborhoods. The algorithm iterates through each neighborhood and checks whether the number of allocated homebuyers is below the neighborhood's capacity. It then evaluates each homebuyer's preferences and scores, starting with their top priority neighborhood. Homebuyers are assigned to their preferred neighborhood if there is available space and they haven't already been allocated. If the neighborhood reaches its capacity, lower-priority homebuyers are re-evaluated and reassigned to other neighborhoods in subsequent iterations, based on their next preferences. This iterative process ensures that homebuyers are placed in the best available neighborhood while considering both preferences and capacity limits.
 
 4. **Write File**  
    Finally, after the homebuyers have been allocated to the neighborhoods, the results are written to an output file. This file displays the final allocation, detailing which homebuyers were assigned to which neighborhoods based on preferences and scores.
