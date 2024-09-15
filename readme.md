@@ -8,7 +8,7 @@ This project implements an algorithm for assigning homebuyers to neighborhoods b
 
 1. [Project Description](#project-description)
 2. [Usage](#usage)
-3. [Directory Structure](#code-structure)
+3. [Directory Structure](#directory-structure)
 4. [Algorithm Details](#algorithm-details)
 
 ## Project Description
@@ -56,3 +56,7 @@ The `algorithm/` directory contains the implementation of the algorithm that all
 - **`place_homebuyers_in_neighborhoods.py`**: Contains the core logic of the algorithm that assigns homebuyers to neighborhoods based on their preferences and scores. This script manages data reading, algorithm execution, and result writing.
 
 Each of these directories and files serves a specific role in the organization and functionality of the project, helping to keep the code modular and maintainable.
+
+
+## Algorithm Details
+![flow-chart](https://github.com/user-attachments/assets/5b7d37d4-23b7-45a4-a486-cc8ccda73b53)
