@@ -54,7 +54,7 @@ class PlaceHomeBuyersInNeighborhoods:
             homebuyer.set_neighborhoods_score(self.neighborhoods)
             self.homebuyers[homebuyer.entity_id] = homebuyer
 
-    def read_file(self) -> None:
+    def read_input_file(self) -> None:
         """
         Reads and parses the file specified by `file_path` 
         """
@@ -126,7 +126,7 @@ class PlaceHomeBuyersInNeighborhoods:
         if self._unallocated_homebuyers and iteration < len(self.neighborhoods):
             self.assign_homebuyers(iteration + 1)
         
-    def write_file(self) -> None:
+    def wrile_output_file(self) -> None:
         """
         Writes the final allocation of homebuyers to neighborhoods to the output file
         """
@@ -145,7 +145,7 @@ class PlaceHomeBuyersInNeighborhoods:
         Executes the full algorithm to match homebuyers with neighborhoods based on preferences 
         and scores
         """
-        self.read_file()
+        self.read_input_file()
         self.initialize_algorithm()
         self.assign_homebuyers()
-        self.write_file()
+        self.wrile_output_file()
