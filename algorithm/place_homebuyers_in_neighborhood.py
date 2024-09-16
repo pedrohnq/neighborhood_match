@@ -126,7 +126,7 @@ class PlaceHomeBuyersInNeighborhoods:
         if self._unallocated_homebuyers and iteration < len(self.neighborhoods):
             self.assign_homebuyers(iteration + 1)
         
-    def wrile_output_file(self) -> None:
+    def write_output_file(self) -> None:
         """
         Writes the final allocation of homebuyers to neighborhoods to the output file
         """
@@ -148,4 +148,4 @@ class PlaceHomeBuyersInNeighborhoods:
         self.read_input_file()
         self.initialize_algorithm()
         self.assign_homebuyers()
-        self.wrile_output_file()
+        self.write_output_file()
