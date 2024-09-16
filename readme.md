@@ -10,6 +10,7 @@ This project implements an algorithm for assigning homebuyers to neighborhoods b
 2. [Usage](#usage)
 3. [Directory Structure](#directory-structure)
 4. [Algorithm Details](#algorithm-details)
+5. [Running Tests](#running-tests)
 
 ## Project Description
 
@@ -21,8 +22,10 @@ To get started with this project, just clone the repository and run `main.py`:
 
 ```bash
 git clone https://github.com/pedrohnq/neighborhood_match.git
+python3 -m venv venv
+source /venv/bin/activate
 cd neighborhood_match
-python3 main.py
+python main.py
 ```
 
 ## Directory Structure
@@ -57,11 +60,21 @@ The `algorithm/` directory contains the implementation of the algorithm that all
 
 Each of these directories and files serves a specific role in the organization and functionality of the project, helping to keep the code modular and maintainable.
 
+### `tests/`
+
+The `tests/` directory contains tests to ensure that the project functions correctly. The organization of the test files reflects the structure of the project's code, allowing for modular and efficient verification of different parts of the system.
+
+- **`__init__.py`**: Initializes the test module, allowing tests defined in this directory to be imported. 
+
+- **`algorithm_tests.py`**: Contains tests for the logic of the homebuyer allocation algorithm.
+
+- **`entities_tests.py`**: Contains tests related to the project's entities.
+
 
 ## Algorithm Details
 The core algorithm responsible for matching homebuyers to neighborhoods is built around four key stages, which are encapsulated in the `execute` method of the `PlaceHomeBuyersInNeighborhoods` class:
 
-https://github.com/pedrohnq/neighborhood_match/blob/d9819f00116491e99d820916a1c7dd3c971c30da/algorithm/place_homebuyers_in_neighborhood.py#L143-L151
+https://github.com/pedrohnq/neighborhood_match/blob/90e9ee155eb032b5e60fc0ce50cb25cc9a3fefe9/algorithm/place_homebuyers_in_neighborhood.py#L143-L151
 
 The flowchart below visually represents the execution of the algorithm.
 
@@ -80,9 +93,17 @@ The flowchart below visually represents the execution of the algorithm.
    - **Allocation Check**: The algorithm checks if the neighborhood has available space and if the homebuyer has not already been allocated.
    - **Re-evaluation and Reassignment**: If a neighborhood reaches its capacity, lower-priority homebuyers are re-evaluated and reassigned to other neighborhoods in subsequent iterations based on their next preferences.
 
-   https://github.com/pedrohnq/neighborhood_match/blob/d9819f00116491e99d820916a1c7dd3c971c30da/algorithm/place_homebuyers_in_neighborhood.py#L97-L127
+   https://github.com/pedrohnq/neighborhood_match/blob/90e9ee155eb032b5e60fc0ce50cb25cc9a3fefe9/algorithm/place_homebuyers_in_neighborhood.py#L97-L127
 
 4. **Write Output File**  
    Finally, after the homebuyers have been allocated to the neighborhoods, the results are written to an output file. This file displays the final allocation, detailing which homebuyers were assigned to which neighborhoods based on preferences and scores.
 
 These stages ensure that the algorithm processes the input data correctly, allocates homebuyers according to the desired rules, and outputs the results efficiently.
+
+## Running Tests
+
+To run the tests, use Python's `unittest` framework. Navigate to the project's root directory and execute the following command:
+
+```bash
+python -m unittest discover -s tests
+```
