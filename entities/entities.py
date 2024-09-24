@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Dict
 
 from entities.base import BaseEntity
 
@@ -49,7 +49,6 @@ class HomeBuyer(BaseEntity):
         resilience (int): The homebuyer's resilience score 
         prefix (str): A prefix used to identify the type of entity ('H' for HomeBuyer) 
         neighborhood_priority (list): A list of neighborhood identifiers in order of preference 
-        neighborhood_scores (dict): Maps neighborhood IDs to scores based on the dot product of attributes 
     """
     prefix = 'H'
 
@@ -59,7 +58,6 @@ class HomeBuyer(BaseEntity):
         """
         super().__init__(entity_id, energy, water, resilience)
         self.neighborhood_priority = neighborhood_priority
-        self.neighborhood_scores = {key: 0 for key in self.neighborhood_priority}
 
     def __str__(self) -> str:
         """
@@ -104,23 +102,22 @@ class HomeBuyer(BaseEntity):
         base_attributes['neighborhood_priority'] = base_attributes['splitted_string'][-1].split('>')
         return base_attributes
 
-    def set_neighborhoods_score(self, neighborhoods: List[Neighborhood]) -> None:
+    def calculate_neighborhood_score(self, neighborhood: Neighborhood) -> int:
         """
-        Calculates and updates the scores for each neighborhood based on the dot product of the 
+        Calculates the scores for th neighborhood based on the dot product of the 
         homebuyer's attributes and the neighborhood's attributes 
 
         Args:
-            neighborhoods (List[Neighborhood]): A list of Neighborhood objects
+            neighborhood (Neighborhood): An instance of the Neighborhood class
 
         Returns:
-            None: This method updates the neighborhood_scores attribute in place
+            int: Returns the result of dot product
         """
-        for idx, neighborhood in neighborhoods.items():
-            self.neighborhood_scores[idx] = (
-                self.energy * neighborhood.energy
-                + self.water * neighborhood.water 
-                + self.resilience * neighborhood.resilience
-            )
+        return (
+            self.energy * neighborhood.energy
+            + self.water * neighborhood.water 
+            + self.resilience * neighborhood.resilience
+        )
 
     def is_preferred_neighborhood(self, neighborhood_id: int, priority = 0) -> bool:
         """
@@ -132,6 +129,8 @@ class HomeBuyer(BaseEntity):
 
         Returns:
             bool: True if the given neighborhood ID matches the preferred neighborhood at the 
-            specified priority
+                  specified priority
         """
-        return self.neighborhood_priority[priority] == f'N{neighborhood_id}'
+        if f'N{neighborhood_id}' in self.neighborhood_priority and priority < len(self.neighborhood_priority):
+            return self.neighborhood_priority[priority] == f'N{neighborhood_id}'
+        return False

@@ -1,3 +1,5 @@
+import heapq
+
 from entities import HomeBuyer, Neighborhood
 
 
@@ -11,8 +13,6 @@ class PlaceHomeBuyersInNeighborhoods:
         homebuyers (dict): A dictionary mapping homebuyer IDs to HomeBuyer objects 
         priority_buyers (dict): A dictionary mapping neighborhood IDs to lists of prioritized HomeBuyer objects 
         neighb_limit (int): The maximum number of homebuyers that can be allocated to each neighborhood 
-        _allocated_homebuyers (list): A list of homebuyers that have been allocated to neighborhoods 
-        _unallocated_homebuyers (set): A set of homebuyers that have not yet been allocated to any neighborhood 
     """
     def __init__(self, file_path: str) -> None:
         """
@@ -26,15 +26,13 @@ class PlaceHomeBuyersInNeighborhoods:
         self.homebuyers = dict()
         self.priority_buyers = dict()
         self.neighb_limit = 0
-        self._allocated_homebuyers = []
-        self._unallocated_homebuyers = set()
     
     def initialize_algorithm(self) -> None:
         """
         Initializes the allocation algorithm by setting up priority buyers and the neighborhood limit 
         """
         self.priority_buyers = {
-            i: [] for i in range(len(self.neighborhoods))
+            neighb_id: [] for neighb_id in self.neighborhoods.keys()
         }
         self.neighb_limit = len(self.homebuyers) // len(self.neighborhoods)
 
@@ -51,7 +49,6 @@ class PlaceHomeBuyersInNeighborhoods:
             self.neighborhoods[neighborhood.entity_id] = neighborhood
         elif line.startswith('H'):
             homebuyer = HomeBuyer.create_from_string(line)
-            homebuyer.set_neighborhoods_score(self.neighborhoods)
             self.homebuyers[homebuyer.entity_id] = homebuyer
 
     def read_input_file(self) -> None:
@@ -62,70 +59,29 @@ class PlaceHomeBuyersInNeighborhoods:
             for line in file:
                 self._parse_line(line)
 
-    def _buyer_can_be_allocated(self, homebuyer: HomeBuyer, neighborhood_index: int) -> bool:
-        """
-        Checks if a homebuyer can be allocated to a given neighborhood based on current allocations 
+    def assign_homebuyers(self):
+        unallocated_homebuyers = list(self.homebuyers.values())
+        out_of_priority = []
+        index = 0
+        while unallocated_homebuyers:
+            for hb in unallocated_homebuyers[:]:
+                index+=1
+                try:
+                    neighb_preferred = int(hb.neighborhood_priority.pop(0).replace('N', ''))
+                except:
+                    out_of_priority.append(hb)
+                    unallocated_homebuyers.remove(hb)
+                    continue
 
-        Args:
-            homebuyer (HomeBuyer): The homebuyer to be checked
-            neighborhood_index (int): The index of the neighborhood to check against
+                neighb_score = hb.calculate_neighborhood_score(self.neighborhoods[neighb_preferred])
 
-        Returns:
-            bool: True if the homebuyer can be allocated
-        """
-        return (homebuyer not in self._allocated_homebuyers) and (homebuyer not in self.priority_buyers[neighborhood_index])
+                heapq.heappush(self.priority_buyers[neighb_preferred], (neighb_score, -id(hb), hb))
+                unallocated_homebuyers.remove(hb)
 
-    def _update_allocation(self, neighborhood_index: int) -> None:
-        """
-        Updates the allocation of homebuyers to the specified neighborhood and manages 
-        unallocated homebuyers
+                if len(self.priority_buyers[neighb_preferred]) > self.neighb_limit:
+                    element = heapq.heappop(self.priority_buyers[neighb_preferred])
+                    unallocated_homebuyers.append(element[2])
 
-        Args:
-            neighborhood_index (int): The index of the neighborhood to update
-
-        """
-        self.priority_buyers[neighborhood_index] = list(set(self.priority_buyers[neighborhood_index]))
-        self.priority_buyers[neighborhood_index].sort(key = lambda obj: obj.neighborhood_scores[neighborhood_index], reverse=True)
-        self._unallocated_homebuyers = (
-            set(list(self._unallocated_homebuyers) + self.priority_buyers[neighborhood_index][self.neighb_limit:]) 
-            - set(self.priority_buyers[neighborhood_index][:self.neighb_limit])
-        )
-
-        self.priority_buyers[neighborhood_index] = self.priority_buyers[neighborhood_index][:self.neighb_limit]
-        self._allocated_homebuyers.extend(self.priority_buyers[neighborhood_index])
-
-    def assign_homebuyers(self, iteration: int = 0) -> None:
-        """
-        Assigns homebuyers to neighborhoods based on their preferences and scores
-
-        Args:
-            iteration (int, optional): The current iteration level for checking preferences. 
-                                       Defaults to 0
-        """
-        next_priority = iteration
-        for neighb in self.neighborhoods.values():
-            if len(self.priority_buyers[neighb.entity_id]) != self.neighb_limit:
-                for hb in self.homebuyers.values():
-                    if (
-                        hb.is_preferred_neighborhood(neighb.entity_id) 
-                        and self._buyer_can_be_allocated(hb, neighb.entity_id)
-                    ):
-                        self.priority_buyers[neighb.entity_id].append(hb)
-
-                if self._unallocated_homebuyers:
-                    for rm in self._unallocated_homebuyers:
-                        if (
-                            rm.is_preferred_neighborhood(neighb.entity_id, priority=next_priority) 
-                            and self._buyer_can_be_allocated(rm, neighb.entity_id)
-                        ):
-                            self.priority_buyers[neighb.entity_id].append(rm)
-                    next_priority += 1
-
-                self._update_allocation(neighb.entity_id)
-                
-        if self._unallocated_homebuyers and iteration < len(self.neighborhoods):
-            self.assign_homebuyers(iteration + 1)
-        
     def write_output_file(self) -> None:
         """
         Writes the final allocation of homebuyers to neighborhoods to the output file
@@ -134,8 +90,8 @@ class PlaceHomeBuyersInNeighborhoods:
         output_string = ''
         
         with open(file_name, 'w') as file:
-            for neighb, homebuyers in self.priority_buyers.items():
-                homebuyers_string = ' '.join(f'H{hb.entity_id}({hb.neighborhood_scores[neighb]})' for hb in homebuyers)
+            for neighb, homebuyers in dict(sorted(self.priority_buyers.items())).items():
+                homebuyers_string = ' '.join(f'H{hb.entity_id}({score})' for score, mid, hb in sorted(homebuyers, key=lambda x: -x[0]))
                 output_string += f'N{neighb}: {homebuyers_string}\n'
             
             file.write(output_string)
