@@ -19,9 +19,9 @@ class HomeBuyerTest(TestCase):
         self.assertEqual(homebuyer.resilience, 2)
         self.assertEqual(homebuyer.neighborhood_priority, ['N0', 'N1'])
     
-    def test_set_neighborhoods_score(self):
+    def test_calculate_neighborhood_score(self):
         """
-        Test `set_neighborhoods_score` method 
+        Test `calculate_neighborhood_score` method 
         """
         neighborhoods = {
             0: Neighborhood(entity_id=0, energy=5, water=9, resilience=8)
@@ -30,9 +30,9 @@ class HomeBuyerTest(TestCase):
             entity_id=0, energy=4, water=2, resilience=9, neighborhood_priority=['N0', 'N1']
         )
         
-        homebuyer.set_neighborhoods_score(neighborhoods)
+        result = homebuyer.calculate_neighborhood_score(neighborhoods[0])
 
-        self.assertEqual(homebuyer.neighborhood_scores[0], 110)
+        self.assertEqual(result, 110)
 
     def test_is_preferred_neighborhood(self):
         """

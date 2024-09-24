@@ -64,9 +64,6 @@ class PlaceHomeBuyersInNeighborhoodsTest(TestCase):
         """
         Test the `assign_homebuyers` method
         """
-        for hb in self.homebuyers.values():
-            hb.set_neighborhoods_score(self.neighborhoods)
-        
         self.allocator_algorithm.priority_buyers = {0: [], 1: []}
         self.allocator_algorithm.neighb_limit = 2
         self.allocator_algorithm.homebuyers = self.homebuyers
@@ -77,8 +74,8 @@ class PlaceHomeBuyersInNeighborhoodsTest(TestCase):
         self.assertEqual(
             self.allocator_algorithm.priority_buyers, 
             {
-                0: [self.homebuyers[2], self.homebuyers[1]], 
-                1: [self.homebuyers[3], self.homebuyers[0]]
+                0: [(128, self.homebuyers[2]), (119, self.homebuyers[1])], 
+                1: [(31, self.homebuyers[3]), (17, self.homebuyers[0])]
             }
         )
     
@@ -88,12 +85,9 @@ class PlaceHomeBuyersInNeighborhoodsTest(TestCase):
         Test the `write_output_data` method
         """
         self.allocator_algorithm.priority_buyers = {
-            0: [self.homebuyers[2], self.homebuyers[1]], 
-            1: [self.homebuyers[3], self.homebuyers[0]]
+            0: [(128, self.homebuyers[2]), (119, self.homebuyers[1])], 
+            1: [(31, self.homebuyers[3]), (17, self.homebuyers[0])]
         }
-
-        for hb in self.homebuyers.values():
-            hb.set_neighborhoods_score(self.neighborhoods)
 
         self.allocator_algorithm.write_output_file()
         
